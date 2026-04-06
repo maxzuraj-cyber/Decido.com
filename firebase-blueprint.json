@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and subscription status",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string", "format": "url" },
+        "subscription": { "type": "string", "enum": ["free", "pro"] },
+        "decisionsCount": { "type": "number" },
+        "lastDecisionDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "subscription"]
+    },
+    "Decision": {
+      "title": "Decision",
+      "description": "A decision analysis request and result",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Owner UID" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "mode": { "type": "string", "enum": ["analyst", "money", "life", "brutal"] },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "budget": { "type": "number" },
+            "timeline": { "type": "string" },
+            "priorities": { "type": "array", "items": { "type": "string" } },
+            "riskTolerance": { "type": "number" }
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "properties": {
+            "recommendation": { "type": "string" },
+            "pros": { "type": "array", "items": { "type": "string" } },
+            "cons": { "type": "array", "items": { "type": "string" } },
+            "riskLevel": { "type": "string", "enum": ["low", "medium", "high"] },
+            "confidenceScore": { "type": "number" },
+            "reasoning": { "type": "string" },
+            "actionPlan": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "isHelpful": { "type": "boolean" }
+      },
+      "required": ["uid", "title", "mode", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents"
+    },
+    "/decisions/{decisionId}": {
+      "schema": "Decision",
+      "description": "Decision analysis results"
+    }
+  }
+}
